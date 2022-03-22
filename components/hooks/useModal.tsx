@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { createPortal, render } from "react-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -22,6 +22,13 @@ const Container = styled.div`
 
 const useModal = () => {
   const [modalOpened, setModalOpened] = useState(false);
+
+  useEffect(() => {
+    modalOpened ?
+      document.body.style.overflow = 'hidden'
+    :
+      document.body.style.overflow = 'unset'
+  }, [modalOpened])
 
   const openModal = () => {
     setModalOpened(true);

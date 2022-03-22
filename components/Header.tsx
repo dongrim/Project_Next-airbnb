@@ -4,8 +4,8 @@ import styled from "styled-components";
 import AirbnbLogoIcon from '../public/static/svg/logo/logo.svg'
 import AirbnbLogoText from '../public/static/svg/logo/logo_text.svg'
 import palette from '../styles/palette';
-import ModalPortal from './MordalPortal';
 import SignUpModal from './auth/SignUpModal';
+import useModal from './hooks/useModal';
 
 const Container = styled.div`
   position: sticky;
@@ -112,14 +112,7 @@ const Container = styled.div`
 `;
 
 const Header = () => {
-  const [modalOpened, setModalOpened] = useState(false);
-
-  useEffect(() => {
-    modalOpened ?
-      document.body.style.overflow = 'hidden'
-    :
-      document.body.style.overflow = 'unset'
-  }, [modalOpened]);
+  const { openModal, ModalPortal } = useModal();
 
   return (
     <Container>
@@ -131,20 +124,19 @@ const Header = () => {
       </Link>
       <div className='header-auth-buttons'>
         <button
+          type="button"
           className='header-sign-up-button'
-          onClick={() => setModalOpened(true)}
+          onClick={openModal}
         >
           Sign up
         </button>
-        <button className='header-login-button'>
+        <button type="button" className='header-login-button'>
           Log in
         </button>
       </div>
-      {modalOpened &&
-        <ModalPortal closePortal={() => setModalOpened(false)}>
-          <SignUpModal />
-        </ModalPortal>
-      }
+      <ModalPortal>
+        <SignUpModal />
+      </ModalPortal>
     </Container>
     );
 };
