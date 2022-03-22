@@ -1,3 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "lib": ["DOM", "ESNEXT", "DOM.Iterable"],
+    "noResolve": false,
+    "noImplicitAny": false,
+    "removeComments": false,
+    "sourceMap": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "keyofStringsOnly": true,
+    "jsx": "preserve",
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "incremental": true
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
+
 // {
 //   "compilerOptions": {
 //     "target": "es5",
@@ -28,30 +55,3 @@
 //     "node_modules"
 //   ]
 // }
-
-{
-  "compilerOptions": {
-    "target": "ES5",
-    "module": "ESNext",
-    "moduleResolution": "node",
-    "lib": ["DOM", "ESNEXT", "DOM.Iterable"],
-    "noResolve": false,
-    "noImplicitAny": false,
-    "removeComments": false,
-    "sourceMap": true,
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "keyofStringsOnly": true,
-    "jsx": "preserve",
-    "noEmit": true,
-    "isolatedModules": true,
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "incremental": true
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
-}

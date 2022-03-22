@@ -4,8 +4,6 @@ import styled from "styled-components";
 import AirbnbLogoIcon from '../public/static/svg/logo/logo.svg'
 import AirbnbLogoText from '../public/static/svg/logo/logo_text.svg'
 import palette from '../styles/palette';
-import ModalPortal from './MordalPortal';
-import SignUpModal from './auth/SignUpModal';
 
 const Container = styled.div`
   position: sticky;
@@ -110,6 +108,35 @@ const Container = styled.div`
     }
   }
 `;
+const ModalWrapper = styled.div`
+  position: absolute;
+  top: ${() => `${window.scrollY}px`};
+  width: 100%;
+  height: 100%;
+  z-index: 11;
+  border: 3px solid red;
+  `;
+const ModalScreen = styled.div`
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  border: 3px solid green;
+`;
+const Modal = styled.div`
+  position: absolute;
+  width: 568px;
+  height: 680px;
+  margin: auto;
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  left: 0px;
+  border-radius: 12px;
+  /* z-index: 12; */
+  border: 3px solid blue;
+  background-color:  white;
+  padding: 10px;
+`;
 
 const Header = () => {
   const [modalOpened, setModalOpened] = useState(false);
@@ -122,6 +149,7 @@ const Header = () => {
   }, [modalOpened]);
 
   return (
+    <>
     <Container>
       <Link href='/'>
         <a className='header-logo-wrapper'>
@@ -140,12 +168,19 @@ const Header = () => {
           Log in
         </button>
       </div>
-      {modalOpened &&
-        <ModalPortal closePortal={() => setModalOpened(false)}>
-          <SignUpModal />
-        </ModalPortal>
-      }
     </Container>
+      {modalOpened &&
+        <ModalWrapper>
+          <ModalScreen onClick={() => setModalOpened(false)} />
+          <Modal>
+            <button onClick={() => setModalOpened(false)}>
+              X
+            </button>
+            MODAL
+          </Modal>
+        </ModalWrapper>
+      }
+    </>
     );
 };
 

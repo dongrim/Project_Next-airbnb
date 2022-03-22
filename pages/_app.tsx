@@ -16,6 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <Header />
         <Component {...pageProps} />
+        <div id="root-modal" />
       </ThemeProvider>
     </>
   );
