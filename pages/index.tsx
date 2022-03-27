@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  background: darkcyan;
+  background: rgba(20, 80, 70, 0.6);
   width: 80%;
   height: 120vh;
 `;

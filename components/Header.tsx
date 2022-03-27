@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link'
-import styled from "styled-components";
-import AirbnbLogoIcon from '../public/static/svg/logo/logo.svg'
-import AirbnbLogoText from '../public/static/svg/logo/logo_text.svg'
+import React from 'react';
+import Link from 'next/link';
+import styled from 'styled-components';
+import AirbnbLogoIcon from '../public/static/svg/logo/logo.svg';
+import AirbnbLogoText from '../public/static/svg/logo/logo_text.svg';
 import palette from '../styles/palette';
 import SignUpModal from './auth/SignUpModal';
 import useModal from './hooks/useModal';
@@ -112,33 +112,29 @@ const Container = styled.div`
 `;
 
 const Header = () => {
-  const { openModal, ModalPortal } = useModal();
+  const { openModal, closeModal, ModalPortal } = useModal();
 
   return (
     <Container>
-      <Link href='/'>
-        <a className='header-logo-wrapper'>
-          <AirbnbLogoIcon className='header-logo' />
+      <Link href="/">
+        <a className="header-logo-wrapper">
+          <AirbnbLogoIcon className="header-logo" />
           <AirbnbLogoText />
         </a>
       </Link>
-      <div className='header-auth-buttons'>
-        <button
-          type="button"
-          className='header-sign-up-button'
-          onClick={openModal}
-        >
+      <div className="header-auth-buttons">
+        <button type="button" className="header-sign-up-button" onClick={openModal}>
           Sign up
         </button>
-        <button type="button" className='header-login-button'>
+        <button type="button" className="header-login-button">
           Log in
         </button>
       </div>
       <ModalPortal>
-        <SignUpModal />
+        <SignUpModal closeModal={closeModal} />
       </ModalPortal>
     </Container>
-    );
+  );
 };
 
 export default Header;

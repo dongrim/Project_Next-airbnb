@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { createPortal, render } from "react-dom";
-import styled from "styled-components";
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import styled from 'styled-components';
 
 const Container = styled.div`
   width: 100%;
@@ -24,19 +24,18 @@ const useModal = () => {
   const [modalOpened, setModalOpened] = useState(false);
 
   useEffect(() => {
-    modalOpened ?
-      document.body.style.overflow = 'hidden'
-    :
-      document.body.style.overflow = 'unset'
-  }, [modalOpened])
+    modalOpened
+      ? (document.body.style.overflow = 'hidden')
+      : (document.body.style.overflow = 'unset');
+  }, [modalOpened]);
 
   const openModal = () => {
     setModalOpened(true);
-  }
+  };
 
   const closeModal = () => {
     setModalOpened(false);
-  }
+  };
 
   interface IProps {
     children: React.ReactNode;
@@ -49,7 +48,7 @@ const useModal = () => {
     useEffect(() => {
       setMounted(true);
       if (document) {
-        const dom = document.querySelector("#root-modal");
+        const dom = document.querySelector('#root-modal');
         ref.current = dom;
       }
     }, []);
@@ -57,14 +56,10 @@ const useModal = () => {
     if (ref.current && mounted && modalOpened) {
       return createPortal(
         <Container>
-          <div
-            className="modal-background"
-            role="presentation"
-            onClick={closeModal}
-          />
+          <div className="modal-background" role="presentation" onClick={closeModal} />
           {children}
         </Container>,
-        ref.current
+        ref.current,
       );
     }
     return null;
@@ -73,8 +68,8 @@ const useModal = () => {
   return {
     openModal,
     closeModal,
-    ModalPortal
-  }
+    ModalPortal,
+  };
 };
 
 export default useModal;
