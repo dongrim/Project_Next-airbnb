@@ -11,7 +11,6 @@ import { monthList, dayList, yearList } from '../../lib/staticData';
 import palette from '../../styles/palette';
 import Button from '../common/Button';
 import { signupAPI } from '../../lib/api/user';
-import { StoredUserType } from '../../types/user'
 import bcrypt from 'bcryptjs';
 
 const Container = styled.div`

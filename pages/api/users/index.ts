@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { StoredUserType } from '../../../types/user';
+import { UserType } from '../../../types/user';
 import Data from '../../../lib/data';
 
-export default function (req: NextApiRequest, res: NextApiResponse<StoredUserType[]>) {
+export default function (req: NextApiRequest, res: NextApiResponse<UserType[]>) {
   if(req.method === "GET") {
     const users = Data.users.getList();
     res.status(200).send(users);
@@ -16,7 +16,7 @@ export default function (req: NextApiRequest, res: NextApiResponse<StoredUserTyp
       userId = users[users.length - 1].id + 1;
     }
 
-    const newUser: StoredUserType = {
+    const newUser: UserType = {
       id: userId,
       ...req.body,
     }

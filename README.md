@@ -6,12 +6,20 @@
 
 ## Dependencis
 
-1. `Styled-Components`
+1. `Redux`
+
+- redux
+- next-redux-wrapper
+- @reduxjs/toolkit
+- react-redux
+- @types/react-redux
+
+2. `Styled-Components`
 
 - styled-components
 - @types/styled-components
 
-2. `ESLint`
+3. `ESLint`
 
 ## Debug
 
