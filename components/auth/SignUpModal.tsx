@@ -12,6 +12,8 @@ import palette from '../../styles/palette';
 import Button from '../common/Button';
 import { signupAPI } from '../../lib/api/user';
 import bcrypt from 'bcryptjs';
+import { useDispatch } from 'react-redux';
+import { setLoggedUser } from '../../redux/store/userSlice'
 
 const Container = styled.div`
   padding: 15px 20px;
@@ -130,6 +132,9 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
   const [birthMonth, setBirthMonth] = useState<string>('');
   const [birthDay, setBirthDay] = useState<string>('');
   const [birthYear, setBirthYear] = useState<string>('');
+  const [validateMode, setValidateMode] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
 
   const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -156,20 +161,26 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
     setBirthYear(event.target.value);
   };
 
-  const onSubmitSignUp = (event: FormTarget) => {
+  const onSubmitSignUp = async (event: FormTarget) => {
     event.preventDefault();
+    setValidateMode(true);
+    if (!email || !firstname || !lastname || !password) {
+      console.log('form validation invoked!');
+      return;
+    }
     try {
       const signUpBody = {
-        email: event.target.email.value,
-        firstname: event.target.firstname.value,
-        lastname: event.target.lastname.value,
+        email,
+        firstname,
+        lastname,
         birth: new Date(`${birthYear}-${birthMonth}-${birthDay}`).toISOString(),
         password: bcrypt.hashSync(event.target.password.value, 8),
         //      ./public/static/image/user/default_user_profile_image.jpg
         profileImage: "/static/image/user/default_user_profile_image.jpg"
       }
       console.log(signUpBody);
-      signupAPI(signUpBody);
+      const { data } = await signupAPI(signUpBody);
+      dispatch(setLoggedUser(data));
       closeModal();
     } catch (e) {
       console.error(e);
@@ -193,6 +204,10 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="email"
               value={email}
               onChange={onChangeEmail}
+              validateMode={validateMode}
+              useValidation
+              isValid={!!email}
+              errorMessage="Email is required"
             />
           </div>
           <div className="input-wrapper">
@@ -203,6 +218,10 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="firstname"
               value={firstname}
               onChange={onChangeFirstname}
+              validateMode={validateMode}
+              useValidation
+              isValid={!!firstname}
+              errorMessage="First Name is required"
             />
           </div>
           <div className="input-wrapper">
@@ -213,6 +232,10 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="lastname"
               value={lastname}
               onChange={onChangeLastname}
+              validateMode={validateMode}
+              useValidation
+              isValid={!!lastname}
+              errorMessage="Last Name is required"
             />
           </div>
           <div className="input-wrapper password-input-warpper">
@@ -228,6 +251,10 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="password"
               value={password}
               onChange={onChangePassword}
+              validateMode={validateMode}
+              useValidation
+              isValid={!!password}
+              errorMessage="Password is required"
             />
           </div>
         </div>

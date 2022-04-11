@@ -2,9 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { UserType } from '../../../types/user';
 import Data from '../../../lib/data';
 
-export default function (req: NextApiRequest, res: NextApiResponse<UserType[]>) {
+export default function (req: NextApiRequest, res: NextApiResponse<UserType>) {
   if(req.method === "GET") {
-    const users = Data.users.getList();
+    const users: any = Data.users.getList();
     res.status(200).send(users);
   }
   if(req.method === "POST") {
@@ -21,7 +21,7 @@ export default function (req: NextApiRequest, res: NextApiResponse<UserType[]>) 
       ...req.body,
     }
     Data.users.addUser([...users ,newUser])
-    res.status(200).end();
+    res.status(200).send(newUser);
   }
   res.status(405).end();
 }

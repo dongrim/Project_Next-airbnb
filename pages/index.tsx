@@ -1,4 +1,4 @@
-import React from 'react';
+import type { NextPage } from 'next';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -11,7 +11,7 @@ const Title = styled.h1`
   font-size: 2.2rem;
 `;
 
-const Home: React.FC = () => {
+const Home: NextPage = () => {
   return (
     <Container>
       <Title>hello, nextJS!</Title>

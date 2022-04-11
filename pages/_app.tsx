@@ -2,6 +2,7 @@ import { AppProps } from 'next/app';
 import GlobalStyle from '../styles/GlobalStyle';
 import { ThemeProvider } from 'styled-components';
 import Header from '../components/Header';
+import { wrapper } from '../redux/store';
 
 const theme = {
   colors: {
@@ -9,7 +10,7 @@ const theme = {
   },
 };
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <GlobalStyle />
@@ -21,6 +22,8 @@ export default function App({ Component, pageProps }: AppProps) {
     </>
   );
 }
+
+export default wrapper.withRedux(App);
 
 // causing every page in your app to be server-side rendered.
 // MyApp.getInitialProps = async (appContext) => {
