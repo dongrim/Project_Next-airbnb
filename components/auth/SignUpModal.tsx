@@ -13,7 +13,9 @@ import Button from '../common/Button';
 import { signupAPI } from '../../lib/api/user';
 import bcrypt from 'bcryptjs';
 import { useDispatch } from 'react-redux';
-import { setLoggedUser } from '../../redux/store/userSlice'
+import { userActions } from '../../redux/store/userSlice'
+import { commonActions } from '../../redux/store/commonSlice'
+import useValidateMode from '../hooks/useValidateMode';
 
 const Container = styled.div`
   padding: 15px 20px;
@@ -132,9 +134,10 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
   const [birthMonth, setBirthMonth] = useState<string>('');
   const [birthDay, setBirthDay] = useState<string>('');
   const [birthYear, setBirthYear] = useState<string>('');
-  const [validateMode, setValidateMode] = useState<boolean>(false);
+  // const [validateMode, setValidateMode] = useState<boolean>(false);
 
   const dispatch = useDispatch();
+  const { setValidateMode } = useValidateMode();
 
   const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -163,6 +166,8 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
 
   const onSubmitSignUp = async (event: FormTarget) => {
     event.preventDefault();
+    // setValidateMode(true);
+    // dispatch(commonActions.setValidateMode(true));
     setValidateMode(true);
     if (!email || !firstname || !lastname || !password) {
       console.log('form validation invoked!');
@@ -180,7 +185,7 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
       }
       console.log(signUpBody);
       const { data } = await signupAPI(signUpBody);
-      dispatch(setLoggedUser(data));
+      dispatch(userActions.setLoggedUser(data));
       closeModal();
     } catch (e) {
       console.error(e);
@@ -204,7 +209,7 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="email"
               value={email}
               onChange={onChangeEmail}
-              validateMode={validateMode}
+              // validateMode={validateMode}
               useValidation
               isValid={!!email}
               errorMessage="Email is required"
@@ -218,7 +223,7 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="firstname"
               value={firstname}
               onChange={onChangeFirstname}
-              validateMode={validateMode}
+              // validateMode={validateMode}
               useValidation
               isValid={!!firstname}
               errorMessage="First Name is required"
@@ -232,7 +237,7 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="lastname"
               value={lastname}
               onChange={onChangeLastname}
-              validateMode={validateMode}
+              // validateMode={validateMode}
               useValidation
               isValid={!!lastname}
               errorMessage="Last Name is required"
@@ -251,7 +256,7 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="password"
               value={password}
               onChange={onChangePassword}
-              validateMode={validateMode}
+              // validateMode={validateMode}
               useValidation
               isValid={!!password}
               errorMessage="Password is required"

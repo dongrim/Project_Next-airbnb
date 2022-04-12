@@ -3,10 +3,12 @@ import { HYDRATE, createWrapper } from 'next-redux-wrapper';
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-redux';
 import userReducer from '../store/userSlice';
+import commonReducer from '../store/commonSlice';
 import { UserState } from '../../types/reduxState';
 
 const rootReducer = combineReducers({
-  user: userReducer
+  user: userReducer,
+  common: commonReducer
 });
 
 const reducer = (state, action: AnyAction) => {
@@ -23,7 +25,6 @@ const reducer = (state, action: AnyAction) => {
 
 // export type RootState = ReturnType<typeof store.getState>;
 // export type AppDispatch = typeof store.dispatch;
-
 export type RootState = ReturnType<typeof rootReducer>
 export const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 

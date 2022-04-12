@@ -1,6 +1,9 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../styles/palette';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store/index';
+import useValidateMode from '../hooks/useValidateMode';
 
 type InputContainerProps = {
   iconExist: boolean;
@@ -71,7 +74,7 @@ const Container = styled.div<InputContainerProps>`
 
 interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon: JSX.Element;
-  validateMode: boolean;
+  // validateMode: boolean;
   useValidation: boolean;
   isValid: boolean;
   errorMessage: string;
@@ -79,21 +82,16 @@ interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 const Input: React.FC<IProps> = ({
   icon,
-  validateMode,
+  // validateMode,
   useValidation,
   isValid,
   errorMessage,
   ...props
   }) => {
-  // useEffect(() => {
-  //   if(!props.name) return;
-  //   setSignUpValidation((prev): any => [...prev, {
-  //     [props.name]: {
-  //       value: props.value,
-  //       exist: !!props.value,
-  //     }
-  //   }]);
-  // }, []);
+
+  // const validateMode = useSelector((state: RootState) => state.common.validateMode);
+  const { validateMode } = useValidateMode();
+
   return (
     <Container
       iconExist={!!icon}
