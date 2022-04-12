@@ -135,9 +135,15 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
   const [birthDay, setBirthDay] = useState<string>('');
   const [birthYear, setBirthYear] = useState<string>('');
   // const [validateMode, setValidateMode] = useState<boolean>(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
 
   const dispatch = useDispatch();
   const { setValidateMode } = useValidateMode();
+
+  const onFocusPassword = () => {
+    setPasswordFocused(true);
+    console.log('onFocusPassword: ', passwordFocused);
+  }
 
   const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -256,11 +262,25 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="password"
               value={password}
               onChange={onChangePassword}
+              onFocus={onFocusPassword}
               // validateMode={validateMode}
               useValidation
               isValid={!!password}
               errorMessage="Password is required"
             />
+            <div>
+              <ul>
+                <li>
+                  <p>Password can not include your name nor email address.</p>
+                </li>
+                <li>
+                  <p>Minimum 8 character at least.</p>
+                </li>
+                <li>
+                  <p>Password must include charactor, number and symbol.</p>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
         <div>
