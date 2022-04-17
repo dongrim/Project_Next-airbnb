@@ -18,6 +18,7 @@ function App({ Component, pageProps }: AppProps) {
         <Header />
         <Component {...pageProps} />
         <div id="root-modal" />
+        <div id="root-modal2" />
       </ThemeProvider>
     </>
   );
@@ -26,8 +27,8 @@ function App({ Component, pageProps }: AppProps) {
 export default wrapper.withRedux(App);
 
 // causing every page in your app to be server-side rendered.
-// MyApp.getInitialProps = async (appContext) => {
-//   const appProps = await App.getInitialProps(appContext);
-//   console.log('getInitailProps!')
-//   return { ...appProps }
-// }
+/* MyApp.getInitialProps = async (appContext) => {
+  const appProps = await App.getInitialProps(appContext);
+  console.log('getInitailProps!')
+  return { ...appProps }
+} */

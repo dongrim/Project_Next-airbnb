@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components';
 import Input from '../common/Input';
 import CloseXIcon from '../../public/static/svg/modal/modal_close_x_icon.svg';
@@ -13,9 +13,10 @@ import Button from '../common/Button';
 import { signupAPI } from '../../lib/api/user';
 import bcrypt from 'bcryptjs';
 import { useDispatch } from 'react-redux';
-import { userActions } from '../../redux/store/userSlice'
-import { commonActions } from '../../redux/store/commonSlice'
+import { userActions } from '../../redux/store/userSlice';
+// import { commonActions } from '../../redux/store/commonSlice'
 import useValidateMode from '../hooks/useValidateMode';
+import PasswordWarning from './PasswordWarning';
 
 const Container = styled.div`
   padding: 15px 20px;
@@ -63,7 +64,8 @@ const Container = styled.div`
     transform: scale(0.9);
   }
 
-  .input-person-icon {}
+  .input-person-icon {
+  }
 
   .password-input-warpper {
     svg {
@@ -74,16 +76,16 @@ const Container = styled.div`
   .sign-up-birthday-label {
     font-size: 16px;
     font-weight: 600;
-    margin: 16px 0 8px;
+    margin: 30px 0 8px;
   }
   .sign-up-modal-birthday-info {
     font-size: 15px;
     line-height: 1.4;
     margin-bottom: 16px;
-    color: ${palette.charcoal}
+    color: ${palette.charcoal};
   }
 
-  .sign-up-modal-birthday-select-wrapper{
+  .sign-up-modal-birthday-select-wrapper {
     display: flex;
     margin-bottom: 24px;
     select {
@@ -121,11 +123,16 @@ const Container = styled.div`
 interface FormElements extends HTMLFormElement {
   email: HTMLInputElement;
 }
+
 interface FormTarget extends React.FormEvent<HTMLFormElement> {
   target: FormElements;
 }
 
-const SignUpModal: React.FC<any> = ({ closeModal }) => {
+interface IProps {
+  closeModal: () => void;
+}
+
+const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
   const [email, setEmail] = useState<string>('');
   const [firstname, setFirstname] = useState<string>('');
   const [lastname, setLastname] = useState<string>('');
@@ -140,10 +147,33 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
   const dispatch = useDispatch();
   const { setValidateMode } = useValidateMode();
 
+  useEffect(() => {
+    return () => {
+      setValidateMode(false);
+    };
+  }, []);
+
+  const isPasswordHasNameOrEmail = useMemo(
+    () =>
+      !(
+        !password ||
+        !lastname ||
+        password.includes(lastname) ||
+        password.includes(email.split('@')[0])
+      ),
+    [password, lastname, email],
+  );
+  const PASSWORD_MIN_LENGTH = 8;
+  const isPasswordOverMinLength = useMemo(() => password.length >= PASSWORD_MIN_LENGTH, [password]);
+  const isPasswordHasNumberOrSymbol = useMemo(() => {
+    const reg_symbol = /[{}[\]/?.,;:|)*~`!^\-_+<>@#$%&\\=('"]/g;
+    const reg_number = /[0-9]/g;
+    return reg_symbol.test(password) && reg_number.test(password);
+  }, [password]);
+
   const onFocusPassword = () => {
     setPasswordFocused(true);
-    console.log('onFocusPassword: ', passwordFocused);
-  }
+  };
 
   const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -170,40 +200,52 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
     setBirthYear(event.target.value);
   };
 
+  const validateSignUpForm = () => {
+    if (!email || !firstname || !lastname || !password) {
+      return false;
+    }
+    if (!isPasswordHasNameOrEmail || !isPasswordOverMinLength || !isPasswordHasNumberOrSymbol) {
+      return false;
+    }
+    if (!birthMonth || !birthDay || !birthYear) {
+      return false;
+    }
+    return true;
+  };
+
   const onSubmitSignUp = async (event: FormTarget) => {
     event.preventDefault();
     // setValidateMode(true);
     // dispatch(commonActions.setValidateMode(true));
     setValidateMode(true);
-    if (!email || !firstname || !lastname || !password) {
-      console.log('form validation invoked!');
-      return;
-    }
-    try {
-      const signUpBody = {
-        email,
-        firstname,
-        lastname,
-        birth: new Date(`${birthYear}-${birthMonth}-${birthDay}`).toISOString(),
-        password: bcrypt.hashSync(event.target.password.value, 8),
-        //      ./public/static/image/user/default_user_profile_image.jpg
-        profileImage: "/static/image/user/default_user_profile_image.jpg"
+
+    if (validateSignUpForm()) {
+      try {
+        const signUpBody = {
+          email,
+          firstname,
+          lastname,
+          birth: new Date(`${birthYear}-${birthMonth}-${birthDay}`).toISOString(),
+          password: bcrypt.hashSync(event.target.password.value, 8),
+          //      ./public/static/image/user/default_user_profile_image.jpg
+          profileImage: '/static/image/user/default_user_profile_image.jpg',
+        };
+        const { data } = await signupAPI(signUpBody);
+        dispatch(userActions.setLoggedUser(data));
+        console.log(data);
+        closeModal();
+      } catch (e) {
+        console.error(e);
       }
-      console.log(signUpBody);
-      const { data } = await signupAPI(signUpBody);
-      dispatch(userActions.setLoggedUser(data));
-      closeModal();
-    } catch (e) {
-      console.error(e);
     }
-  }
+  };
 
   return (
     <Container>
-      <div className='sign-up-header'>
+      <div className="sign-up-header">
         <CloseXIcon className="mordal-close-x-icon" onClick={closeModal} />
         <div className="x-icon-wrapper" />
-        <div className='sign-up-header-title'>Sign up</div>
+        <div className="sign-up-header-title">Sign up</div>
       </div>
       <form onSubmit={onSubmitSignUp}>
         <div>
@@ -215,7 +257,7 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
               name="email"
               value={email}
               onChange={onChangeEmail}
-              // validateMode={validateMode}
+              // validateMode={validateMode} // hooks > useValidateMode.tsx
               useValidation
               isValid={!!email}
               errorMessage="Email is required"
@@ -253,57 +295,79 @@ const SignUpModal: React.FC<any> = ({ closeModal }) => {
             <Input
               placeholder="Password"
               icon={
-                hidePassword ?
+                hidePassword ? (
                   <ClosedEyeIcon onClick={toggleVisiblePassword} />
-                  :
+                ) : (
                   <OpenedEyeIcon onClick={toggleVisiblePassword} />
+                )
               }
               type={`${hidePassword ? 'password' : 'text'}`}
               name="password"
               value={password}
               onChange={onChangePassword}
-              onFocus={onFocusPassword}
               // validateMode={validateMode}
               useValidation
-              isValid={!!password}
+              // isValid={!!password}
+              isValid={
+                isPasswordHasNameOrEmail && isPasswordOverMinLength && isPasswordHasNumberOrSymbol
+              }
               errorMessage="Password is required"
+              onFocus={onFocusPassword}
             />
-            <div>
-              <ul>
-                <li>
-                  <p>Password can not include your name nor email address.</p>
-                </li>
-                <li>
-                  <p>Minimum 8 character at least.</p>
-                </li>
-                <li>
-                  <p>Password must include charactor, number and symbol.</p>
-                </li>
-              </ul>
-            </div>
+            {passwordFocused && (
+              <>
+                <PasswordWarning
+                  isValid={isPasswordHasNameOrEmail}
+                  message="Must not contain name or email."
+                />
+                <PasswordWarning
+                  isValid={isPasswordOverMinLength}
+                  message="Must be a minimum 8 characters."
+                />
+                <PasswordWarning
+                  isValid={isPasswordHasNumberOrSymbol}
+                  message="Must contain letters, numbers and symbols."
+                />
+              </>
+            )}
           </div>
         </div>
         <div>
-          <p className='sign-up-birthday-label'>Birth Day</p>
-          <p className='sign-up-modal-birthday-info'>
-            By using our Sites, you warrant that you are 18 years of age or older.
-            Other users of Airbnb can not see your birthday information.
+          <p className="sign-up-birthday-label">Birth Day</p>
+          <p className="sign-up-modal-birthday-info">
+            By using our Sites, you warrant that you are 18 years of age or older. Other users of
+            Airbnb can not see your birthday information.
           </p>
         </div>
-        <div className='sign-up-modal-birthday-select-wrapper'>
-          <div className='sign-up-modal-birthday-month-select'>
-            <Select options={monthList} defaultValue="Month" onChange={onChangeBirthMonth} />
+        <div className="sign-up-modal-birthday-select-wrapper">
+          <div className="sign-up-modal-birthday-month-select">
+            <Select
+              options={monthList}
+              defaultValue="Month"
+              onChange={onChangeBirthMonth}
+              isValid={!!birthMonth}
+            />
           </div>
-          <div className='sign-up-modal-birthday-day-select'>
-            <Select options={dayList} defaultValue="Day" onChange={onChangeBirthDay} />
+          <div className="sign-up-modal-birthday-day-select">
+            <Select
+              options={dayList}
+              defaultValue="Day"
+              onChange={onChangeBirthDay}
+              isValid={!!birthDay}
+            />
           </div>
-          <div className='sign-up-modal-birthday-year-select'>
-            <Select options={yearList} defaultValue="Year" onChange={onChangeBirthYear} />
+          <div className="sign-up-modal-birthday-year-select">
+            <Select
+              options={yearList}
+              defaultValue="Year"
+              onChange={onChangeBirthYear}
+              isValid={!!birthYear}
+            />
           </div>
         </div>
-        <Button title="sign up" />
+        <Button type="submit" title="sign up" bgColor="bittersweet" />
       </form>
-      <div className='sign-up-footer '>
+      <div className="sign-up-footer ">
         Do you have account already? <a href="/">Log in</a>
       </div>
     </Container>

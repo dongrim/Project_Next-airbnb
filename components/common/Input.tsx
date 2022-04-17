@@ -1,15 +1,15 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
 import palette from '../../styles/palette';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store/index';
+// import { useSelector } from 'react-redux';
+// import { RootState } from '../../redux/store/index';
 import useValidateMode from '../hooks/useValidateMode';
 
 type InputContainerProps = {
   iconExist: boolean;
   useValidation: boolean;
   isValid: boolean;
-}
+};
 
 const Container = styled.div<InputContainerProps>`
   label {
@@ -48,28 +48,23 @@ const Container = styled.div<InputContainerProps>`
     position: absolute;
     top: 48px;
   }
-  ${({ useValidation, isValid }) => // asd
+  ${({ useValidation, isValid }) =>
     useValidation &&
     !isValid &&
     css`
       input {
         background-color: ${palette.snow};
         border: 2px solid ${palette.orange};
-        /* &:focus {
-          border: 2px solid ${palette.orange};
-        } */
       }
-    `
-  };
-  ${({ useValidation, isValid }) => //
+    `};
+  ${({ useValidation, isValid }) =>
     useValidation &&
     isValid &&
     css`
       input {
         border: 2px solid ${palette.dark_cyan};
       }
-    `
-  };
+    `};
 `;
 
 interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -87,21 +82,16 @@ const Input: React.FC<IProps> = ({
   isValid,
   errorMessage,
   ...props
-  }) => {
-
+}) => {
   // const validateMode = useSelector((state: RootState) => state.common.validateMode);
   const { validateMode } = useValidateMode();
 
   return (
-    <Container
-      iconExist={!!icon}
-      useValidation={validateMode && useValidation}
-      isValid={isValid}
-    >
+    <Container iconExist={!!icon} useValidation={validateMode && useValidation} isValid={isValid}>
       <input {...props} />
       <div className="input-icon-wrapper">{icon}</div>
       {useValidation && validateMode && !isValid && errorMessage && (
-        <p className='input-error-message'>{errorMessage}</p>
+        <p className="input-error-message">{errorMessage}</p>
       )}
     </Container>
   );

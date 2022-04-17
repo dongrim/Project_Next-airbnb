@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import styled from 'styled-components';
 import AirbnbLogoIcon from '../public/static/svg/logo/logo.svg';
 import AirbnbLogoText from '../public/static/svg/logo/logo_text.svg';
+import HamburgerIcon from '../public/static/svg/header/hamburger.svg';
 import palette from '../styles/palette';
 import SignUpModal from './auth/SignUpModal';
 import useModal from './hooks/useModal';
+import { useSelector } from '../redux/store';
+import { UseLoginModal } from './hooks/useLoginModal';
 
 const Container = styled.div`
   position: sticky;
@@ -50,12 +53,21 @@ const Container = styled.div`
       cursor: pointer;
       outline: none;
       font-weight: 600;
-      &:hover {
+      &:hover + .header-login-user-dashboard {
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12);
       }
     }
   }
+
   .header-user-profile {
+    .header-user-button-wrapper {
+      line-height: 100%;
+    }
+    svg {
+      height: 18px;
+      user-select: none;
+    }
+    position: relative;
     display: flex;
     align-items: center;
     height: 42px;
@@ -65,7 +77,6 @@ const Container = styled.div`
     border-radius: 21px;
     background-color: white;
     cursor: pointer;
-    outline: none;
     &:hover {
       box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12);
     }
@@ -74,6 +85,9 @@ const Container = styled.div`
       width: 30px;
       height: 30px;
       border-radius: 50%;
+    }
+    &:hover .header-login-user-dashboard {
+      display: block;
     }
   }
 
@@ -84,35 +98,40 @@ const Container = styled.div`
 
   .header-usermenu {
     position: absolute;
-    right: 0;
-    top: 52px;
-    width: 240px;
-    padding: 8px 0;
-    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
-    border-radius: 8px;
+    top: 40px;
+    right: 0px;
+    width: 220px;
+    padding: 10px 0;
+    box-shadow: 0px 2px 14px rgba(0, 0, 0, 0.35);
+    border-radius: 6px;
     background-color: white;
+    margin-top: 10px;
+    color: rgba(0, 0, 0, 0.8);
     li {
-      display: flex;
-      align-items: center;
       width: 100%;
-      height: 42px;
-      padding: 0 16px;
-      cursor: pointer;
+      padding: 5px 0 5px 15px;
       &:hover {
-        background-color: ${palette.gray_f7};
+        background-color: ${palette.gray_eb};
+        text-decoration: underline;
+        color: black;
       }
     }
     .header-usermenu-divider {
       width: 100%;
       height: 1px;
-      margin: 8px 0;
+      margin: 5px 0;
       background-color: ${palette.gray_dd};
     }
   }
 `;
 
 const Header = () => {
+  // @@ make this as redux
   const { openModal, closeModal, ModalPortal } = useModal();
+  const [openLoginModal, setOpenLoginModal] = useState(false);
+  const [isUsermenuOpened, setIsUsermenuOpened] = useState(false);
+
+  const user = useSelector((state) => state.user);
 
   return (
     <Container>
@@ -122,17 +141,52 @@ const Header = () => {
           <AirbnbLogoText />
         </a>
       </Link>
-      <div className="header-auth-buttons">
-        <button type="button" className="header-sign-up-button" onClick={openModal}>
-          Sign up
-        </button>
-        <button type="button" className="header-login-button">
-          Log in
-        </button>
-      </div>
+      {/* {!true ? ( */}
+      {!user.isLogged ? (
+        <div className="header-auth-buttons">
+          <button type="button" className="header-sign-up-button" onClick={openModal}>
+            Sign up
+          </button>
+          <button
+            type="button"
+            className="header-login-button"
+            onClick={() => setOpenLoginModal(!openLoginModal)}>
+            Log in
+          </button>
+        </div>
+      ) : (
+        <div className="header-user-profile" onClick={() => setIsUsermenuOpened(!isUsermenuOpened)}>
+          <div className="header-user-button-wrapper">
+            <HamburgerIcon className="header-login-menu-icon" />
+            <img src={user.profileImage} className="header-user-profile-image" alt="user-image" />
+            {/* <img
+              src="/static/image/user/default_user_profile_image.jpg"
+              className="header-user-profile-image"
+              alt="user-image"
+            /> */}
+          </div>
+          {isUsermenuOpened && (
+            <div className="header-usermenu">
+              <ul>
+                <li>Manage Host</li>
+                <li>
+                  <Link href="/room/register/building">
+                    <a>Add Host</a>
+                  </Link>
+                </li>
+                <div className="header-usermenu-divider" />
+                <li role="presentation" onClick={() => console.log(123)}>
+                  Logout
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
       <ModalPortal>
         <SignUpModal closeModal={closeModal} />
       </ModalPortal>
+      <UseLoginModal handleOpen={openLoginModal} />
     </Container>
   );
 };

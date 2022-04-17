@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import palette from '../../styles/palette';
 
-const Container = styled.div`
+const Container = styled.div<{ bgColor: string }>`
   width: 100%;
   height: 43px;
 
@@ -11,7 +11,7 @@ const Container = styled.div`
     height: 100%;
     border: 1px solid ${palette.gray_eb};
     border-radius: 4px;
-    background: ${palette.bittersweet};
+    background: ${({ bgColor }) => palette[bgColor]};
     text-transform: capitalize;
     font-size: 19px;
     color: white;
@@ -22,13 +22,18 @@ const Container = styled.div`
   }
 `;
 
+interface IProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  title: string;
+  bgColor: string;
+}
 
-const Button: React.FC<any> = ({ title, ...props }) => {
+const Button: React.FC<IProps> = ({ title, bgColor, ...props }) => {
   return (
-    <Container>
+    <Container bgColor={bgColor}>
       <button {...props}>{title}</button>
     </Container>
   );
 };
 
-export default Button;
+// shouldComponentUpdate(nextProps, nextState)
+export default React.memo(Button);
