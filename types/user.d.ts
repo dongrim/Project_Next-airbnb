@@ -6,4 +6,4 @@ export type UserType = {
   password: string;
   birth: string;
   profileImage: string;
-}
+};

@@ -2,7 +2,6 @@ import { UserType } from './../../types/user.d';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UserState } from '../../types/reduxState';
 
-
 const initialState: UserState = {
   id: 0,
   email: '',
@@ -11,8 +10,8 @@ const initialState: UserState = {
   password: '',
   birth: '',
   profileImage: '',
-  isLogged: false
-}
+  isLogged: false,
+};
 
 export const userSlice = createSlice({
   name: 'user',
@@ -22,7 +21,11 @@ export const userSlice = createSlice({
       state = { ...action.payload, isLogged: true };
       return state;
     },
-  }
+    initUser: (state) => {
+      state = initialState;
+      return state;
+    },
+  },
 });
 
 // export const { setLoggedUser } = userSlice.actions;

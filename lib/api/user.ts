@@ -1,15 +1,15 @@
 import axios from '.';
 import { UserType } from '../../types/user';
 
-interface SignUpAPIBody {
-  email: string;
-  firstname: string;
-  lastname: string;
-  birth: string;
-  password: string;
-  profileImage: string;
-}
+type SignUpAPIBody = Omit<UserType, 'id'>;
+type LoginAPIBody = Pick<UserType, 'email' | 'password'>;
 
-export const signupAPI = (body:SignUpAPIBody) =>
-  axios.post<UserType>('/api/users', body);
-  // axios.post<UserType>('/api/auth/signup', body);
+// export const signupAPI = async (body: SignUpAPIBody): Promise<any> =>
+//   await axios.post<UserType>('/api/users', body);
+export const signupAPI = (body: SignUpAPIBody) => axios.post<UserType>('/api/users', body);
+
+export const loginAPI = (body: LoginAPIBody) => {
+  return axios.post<UserType>('/api/auth/login', body);
+};
+
+export const logoutAPI = () => axios.delete('/api/auth/login');

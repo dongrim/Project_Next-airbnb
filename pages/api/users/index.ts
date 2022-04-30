@@ -1,13 +1,14 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
 import { UserType } from '../../../types/user';
 import Data from '../../../lib/data';
 
 export default function (req: NextApiRequest, res: NextApiResponse<UserType>) {
-  if(req.method === "GET") {
-    const users: any = Data.users.getList();
+  if (req.method === 'GET') {
+    const users: UserType[] | any = Data.users.getList();
     res.status(200).send(users);
   }
-  if(req.method === "POST") {
+
+  if (req.method === 'POST') {
     const users = Data.users.getList();
     let userId;
     if (users.length === 0) {
@@ -19,9 +20,11 @@ export default function (req: NextApiRequest, res: NextApiResponse<UserType>) {
     const newUser: UserType = {
       id: userId,
       ...req.body,
-    }
-    Data.users.addUser([...users ,newUser])
+    };
+
+    Data.users.addUser([...users, newUser]);
     res.status(200).send(newUser);
   }
+
   res.status(405).end();
 }

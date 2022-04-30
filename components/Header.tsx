@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Link from 'next/link';
 import styled from 'styled-components';
 import AirbnbLogoIcon from '../public/static/svg/logo/logo.svg';
 import AirbnbLogoText from '../public/static/svg/logo/logo_text.svg';
 import HamburgerIcon from '../public/static/svg/header/hamburger.svg';
 import palette from '../styles/palette';
-import SignUpModal from './auth/SignUpModal';
 import useModal from './hooks/useModal';
+import AuthModal from '../components/auth/AuthModal';
 import { useSelector } from '../redux/store';
-import { UseLoginModal } from './hooks/useLoginModal';
+import { authActions } from '../redux/store/authSlice';
+import { logoutAPI } from '../lib/api/user';
+import { userActions } from '../redux/store/userSlice';
 
-const Container = styled.div`
+const Container = styled.div<{ isUsermenuOpened: boolean }>`
   position: sticky;
   top: 0;
   width: 100%;
@@ -53,6 +56,7 @@ const Container = styled.div`
       cursor: pointer;
       outline: none;
       font-weight: 600;
+      /* check the below */
       &:hover + .header-login-user-dashboard {
         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.12);
       }
@@ -86,6 +90,7 @@ const Container = styled.div`
       height: 30px;
       border-radius: 50%;
     }
+    /* check the below */
     &:hover .header-login-user-dashboard {
       display: block;
     }
@@ -96,24 +101,37 @@ const Container = styled.div`
     position: relative;
   }
 
+  .header-usermenu-bridge {
+    position: absolute;
+    top: 20px;
+    left: 10px;
+    width: 50px;
+    height: 30px;
+  }
+
   .header-usermenu {
+    display: none;
     position: absolute;
     top: 40px;
     right: 0px;
     width: 220px;
-    padding: 10px 0;
+    padding: 20px 0 10px;
     box-shadow: 0px 2px 14px rgba(0, 0, 0, 0.35);
     border-radius: 6px;
     background-color: white;
     margin-top: 10px;
     color: rgba(0, 0, 0, 0.8);
     li {
+      color: ${palette.black};
       width: 100%;
-      padding: 5px 0 5px 15px;
+      padding: 10px 0 10px 27px;
       &:hover {
-        background-color: ${palette.gray_eb};
-        text-decoration: underline;
-        color: black;
+        background-color: ${palette.gray_f7};
+        /* text-decoration: underline; */
+        color: red;
+      }
+      &:hover a {
+        color: red !important;
       }
     }
     .header-usermenu-divider {
@@ -123,70 +141,94 @@ const Container = styled.div`
       background-color: ${palette.gray_dd};
     }
   }
+
+  .header-user-profile:hover .header-usermenu {
+    /* display: block; */
+    display: ${({ isUsermenuOpened }) => (isUsermenuOpened ? 'block' : 'none')};
+  }
 `;
 
 const Header = () => {
-  // @@ make this as redux
   const { openModal, closeModal, ModalPortal } = useModal();
-  const [openLoginModal, setOpenLoginModal] = useState(false);
-  const [isUsermenuOpened, setIsUsermenuOpened] = useState(false);
+  const [isUsermenuOpened, setIsUsermenuOpened] = useState(true);
 
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
+  // const authMode = useSelector((state) => state.auth.authMode);
+
+  const handleLogout = async () => {
+    try {
+      await logoutAPI(); // clear cookie
+      dispatch(userActions.initUser());
+      setIsUsermenuOpened(false);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
-    <Container>
+    <Container isUsermenuOpened={isUsermenuOpened}>
       <Link href="/">
         <a className="header-logo-wrapper">
           <AirbnbLogoIcon className="header-logo" />
           <AirbnbLogoText />
         </a>
       </Link>
-      {/* {!true ? ( */}
       {!user.isLogged ? (
         <div className="header-auth-buttons">
-          <button type="button" className="header-sign-up-button" onClick={openModal}>
+          <button
+            type="button"
+            className="header-sign-up-button"
+            onClick={() => {
+              dispatch(authActions.setAuthModalMode('signup'));
+              openModal();
+            }}>
             Sign up
           </button>
           <button
             type="button"
             className="header-login-button"
-            onClick={() => setOpenLoginModal(!openLoginModal)}>
+            onClick={() => {
+              dispatch(authActions.setAuthModalMode('login'));
+              openModal();
+            }}>
             Log in
           </button>
         </div>
       ) : (
-        <div className="header-user-profile" onClick={() => setIsUsermenuOpened(!isUsermenuOpened)}>
+        <div
+          className="header-user-profile" /* onClick={() => setIsUsermenuOpened(!isUsermenuOpened)} */
+        >
           <div className="header-user-button-wrapper">
             <HamburgerIcon className="header-login-menu-icon" />
             <img src={user.profileImage} className="header-user-profile-image" alt="user-image" />
-            {/* <img
-              src="/static/image/user/default_user_profile_image.jpg"
-              className="header-user-profile-image"
-              alt="user-image"
-            /> */}
           </div>
-          {isUsermenuOpened && (
+          {/* {isUsermenuOpened && ( */}
+          <>
+            <div className="header-usermenu-bridge" />
             <div className="header-usermenu">
               <ul>
                 <li>Manage Host</li>
                 <li>
                   <Link href="/room/register/building">
-                    <a>Add Host</a>
+                    <a role="presentation" onClick={() => setIsUsermenuOpened(false)}>
+                      Add Host
+                    </a>
                   </Link>
                 </li>
                 <div className="header-usermenu-divider" />
-                <li role="presentation" onClick={() => console.log(123)}>
+                <li role="presentation" onClick={handleLogout}>
                   Logout
                 </li>
               </ul>
             </div>
-          )}
+          </>
+          {/* )} */}
         </div>
       )}
       <ModalPortal>
-        <SignUpModal closeModal={closeModal} />
+        <AuthModal closeModal={closeModal} />
       </ModalPortal>
-      <UseLoginModal handleOpen={openLoginModal} />
     </Container>
   );
 };

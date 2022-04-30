@@ -5,10 +5,12 @@ import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-red
 import userReducer from '../store/userSlice';
 import commonReducer from '../store/commonSlice';
 import { UserState } from '../../types/reduxState';
+import authReducer from '../store/authSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
   common: commonReducer,
+  auth: authReducer,
 });
 
 const reducer = (state, action: AnyAction) => {
@@ -32,4 +34,4 @@ export const initStore = () =>
     devTools: true,
   });
 
-export const wrapper = createWrapper<Store<UserState>>(initStore, { debug: true });
+export const wrapper = createWrapper<Store<UserState>>(initStore /* { debug: true } */);

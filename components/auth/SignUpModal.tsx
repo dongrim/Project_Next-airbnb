@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Input from '../common/Input';
 import CloseXIcon from '../../public/static/svg/modal/modal_close_x_icon.svg';
@@ -12,24 +13,24 @@ import palette from '../../styles/palette';
 import Button from '../common/Button';
 import { signupAPI } from '../../lib/api/user';
 import bcrypt from 'bcryptjs';
-import { useDispatch } from 'react-redux';
 import { userActions } from '../../redux/store/userSlice';
 // import { commonActions } from '../../redux/store/commonSlice'
 import useValidateMode from '../hooks/useValidateMode';
 import PasswordWarning from './PasswordWarning';
+import { authActions } from '../../redux/store/authSlice';
 
 const Container = styled.div`
   padding: 15px 20px;
   width: 568px;
   background-color: white;
-  z-index: 11;
+  z-index: 1;
   border-radius: 10px;
   .sign-up-header {
     height: 56px;
     position: relative;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     .x-icon-wrapper {
       width: 34px;
       height: 34px;
@@ -38,8 +39,7 @@ const Container = styled.div`
       position: absolute;
       z-index: 5;
     }
-    .mordal-close-x-icon {
-      font-size: 15px;
+    .header-close-x-icon {
       cursor: pointer;
       position: absolute;
       left: 0;
@@ -112,10 +112,11 @@ const Container = styled.div`
     margin-bottom: 20px;
     padding-top: 10px;
     font-size: 17px;
-    a {
-      padding-left: 5px;
+    span {
+      padding-left: 13px;
       color: ${palette.dark_cyan};
       text-decoration: underline;
+      cursor: pointer;
     }
   }
 `;
@@ -149,6 +150,7 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
 
   useEffect(() => {
     return () => {
+      console.warn('Unmount#1: signup-modal');
       setValidateMode(false);
     };
   }, []);
@@ -232,18 +234,17 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
         };
         const { data } = await signupAPI(signUpBody);
         dispatch(userActions.setLoggedUser(data));
-        console.log(data);
-        closeModal();
       } catch (e) {
         console.error(e);
       }
+      closeModal();
     }
   };
 
   return (
     <Container>
       <div className="sign-up-header">
-        <CloseXIcon className="mordal-close-x-icon" onClick={closeModal} />
+        <CloseXIcon className="header-close-x-icon" onClick={closeModal} />
         <div className="x-icon-wrapper" />
         <div className="sign-up-header-title">Sign up</div>
       </div>
@@ -368,7 +369,10 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
         <Button type="submit" title="sign up" bgColor="bittersweet" />
       </form>
       <div className="sign-up-footer ">
-        Do you have account already? <a href="/">Log in</a>
+        Do you have account already?
+        <span role="presentation" onClick={() => dispatch(authActions.setAuthModalMode('login'))}>
+          Log in
+        </span>
       </div>
     </Container>
   );

@@ -6,15 +6,20 @@ const getList = () => {
   if (!userString) return [];
   const users: UserType[] = JSON.parse(userString);
   return users;
-}
+};
 
 const existEmail = (email) => {
   const users = getList();
-  return users.some(user => user.email === email);
-}
+  return users.some((user) => user.email === email);
+};
 
 const addUser = (data) => {
   writeFileSync('./data/user.json', JSON.stringify(data));
-}
+};
 
-export default { getList, existEmail, addUser };
+const findUser = (email: string) => {
+  const users = getList();
+  return users.find((user) => user.email === email);
+};
+
+export default { getList, existEmail, addUser, findUser };

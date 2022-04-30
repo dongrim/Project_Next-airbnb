@@ -6,4 +6,8 @@ export type UserState = UserType & {
 
 export type CommonState = {
   validateMode: boolean;
-}
+};
+
+export type AuthState = {
+  authModalMode: 'signup' | 'login';
+};
