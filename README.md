@@ -21,11 +21,35 @@
 
 3. `ESLint`
 
+## Node modules
+
+1. `react-outside-click-handler`
+
+```js
+$ yarn add react-outside-click-handler
+$ yarn add @types/react-outside-click-handler -D
+```
+
+```js
+📁 components/HeaderAuths.tsx
+
+import OutsideClickHandler from 'react-outside-click-handler';
+
+<OutsideClickHandler
+  onOutsideClick={() => {
+    if (isUsermenuOpend) {
+      setIsUsermenuOpend(false);
+    }
+  }}></OutsideClickHandler>;
+```
+
 ## Debug
 
 1. 'module' is not defined. eslint(no-undef)
 
-```bash
+```js
+📁 .eslintrc.js
+
 module.exports = {
   env: {
     node: true,
@@ -33,3 +57,11 @@ module.exports = {
 ```
 
 2. Warning: Prop 'className' did not match. Server: "sc-ksdxgE irTnqB" Client: "sc-bdvvtL fysqpN"
+
+```js
+📁 .babelrc
+{
+   "presets": ["next/babel"],
+   "plugins": ["babel-plugin-styled-components"]
+}
+```

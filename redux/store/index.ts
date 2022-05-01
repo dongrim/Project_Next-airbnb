@@ -23,8 +23,8 @@ const reducer = (state, action: AnyAction) => {
   }
 };
 
-// export type  = ReturnType<typeof store.getState>;
 // export type AppDispatch = typeof store.dispatch;
+// export type RootState = ReturnType<typeof store.getState>
 export type RootState = ReturnType<typeof rootReducer>;
 export const useSelector: TypedUseSelectorHook<RootState> = useReduxSelector;
 
