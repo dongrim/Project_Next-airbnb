@@ -68,7 +68,7 @@ const Container = styled.div<InputContainerProps>`
 `;
 
 interface IProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  icon: JSX.Element;
+  icon?: JSX.Element;
   // validateMode: boolean;
   useValidation: boolean;
   isValid: boolean;
@@ -97,4 +97,5 @@ const Input: React.FC<IProps> = ({
   );
 };
 
-export default Input;
+// export default Input;
+export default React.memo(Input);

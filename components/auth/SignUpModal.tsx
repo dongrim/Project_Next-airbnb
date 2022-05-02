@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import Input from '../common/Input';
@@ -180,9 +180,12 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
   const onChangeEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
   };
-  const onChangeFirstname = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFirstname(event.target.value);
-  };
+  const onChangeFirstname = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setFirstname(event.target.value);
+    },
+    [firstname],
+  );
   const onChangeLastname = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLastname(event.target.value);
   };
@@ -192,15 +195,24 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
   const toggleVisiblePassword = () => {
     setHidePassword(!hidePassword);
   };
-  const onChangeBirthMonth = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setBirthMonth(event.target.value);
-  };
-  const onChangeBirthDay = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setBirthDay(event.target.value);
-  };
-  const onChangeBirthYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setBirthYear(event.target.value);
-  };
+  const onChangeBirthMonth = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setBirthMonth(event.target.value);
+    },
+    [birthMonth],
+  );
+  const onChangeBirthDay = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setBirthDay(event.target.value);
+    },
+    [birthDay],
+  );
+  const onChangeBirthYear = useCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setBirthYear(event.target.value);
+    },
+    [birthYear],
+  );
 
   const validateSignUpForm = () => {
     if (!email || !firstname || !lastname || !password) {
@@ -249,7 +261,7 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
         <div className="sign-up-header-title">Sign up</div>
       </div>
       <form onSubmit={onSubmitSignUp}>
-        <div>
+        <div className="sign-up-input-wrapper">
           <div className="input-wrapper">
             <Input
               placeholder="Email Address"
@@ -333,7 +345,7 @@ const SignUpModal: React.FC<IProps> = ({ closeModal }) => {
             )}
           </div>
         </div>
-        <div>
+        <div className="sign-up-birthday-wrapper">
           <p className="sign-up-birthday-label">Birth Day</p>
           <p className="sign-up-modal-birthday-info">
             By using our Sites, you warrant that you are 18 years of age or older. Other users of

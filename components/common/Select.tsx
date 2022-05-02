@@ -50,4 +50,5 @@ const Select: React.FC<IProps> = ({ options = [], isValid, ...props }) => {
   );
 };
 
-export default Select;
+// export default Select;
+export default React.memo(Select);

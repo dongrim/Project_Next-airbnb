@@ -102,8 +102,8 @@ const LoginModal: React.FC<IProps> = ({ closeModal }) => {
     setHidePassword(!hidePassword);
   };
 
-  const onSubmitLogin = async () => {
-    // event.preventDefault();
+  const onSubmitLogin = async (event) => {
+    event.preventDefault();
     setValidateMode(true);
     if (email && password) {
       const loginBody = { email, password };
@@ -126,39 +126,41 @@ const LoginModal: React.FC<IProps> = ({ closeModal }) => {
         </div>
         <div className="login-header-title">Login</div>
       </div>
-      <div className="input-wrapper">
-        <Input
-          placeholder="Email Address"
-          icon={<MailIcon className="input-mail-icon" />}
-          type="email"
-          name="email"
-          onChange={onChangeEmail}
-          value={email}
-          useValidation
-          isValid={!!email}
-          errorMessage="Email is required"
-        />
-      </div>
-      <div className="input-wrapper">
-        <Input
-          placeholder="Password"
-          icon={
-            hidePassword ? (
-              <ClosedEyeIcon onClick={handlehidePassword} />
-            ) : (
-              <OpenedEyeIcon onClick={handlehidePassword} />
-            )
-          }
-          type={hidePassword ? 'password' : 'text'}
-          name="password"
-          onChange={onChangePassword}
-          value={password}
-          useValidation
-          isValid={!!password}
-          errorMessage="Password is required"
-        />
-      </div>
-      <Button type="submit" title="Login" bgColor="bittersweet" onClick={onSubmitLogin} />
+      <form onSubmit={onSubmitLogin}>
+        <div className="input-wrapper">
+          <Input
+            placeholder="Email Address"
+            icon={<MailIcon className="input-mail-icon" />}
+            type="email"
+            name="email"
+            onChange={onChangeEmail}
+            value={email}
+            useValidation
+            isValid={!!email}
+            errorMessage="Email is required"
+          />
+        </div>
+        <div className="input-wrapper">
+          <Input
+            placeholder="Password"
+            icon={
+              hidePassword ? (
+                <ClosedEyeIcon onClick={handlehidePassword} />
+              ) : (
+                <OpenedEyeIcon onClick={handlehidePassword} />
+              )
+            }
+            type={hidePassword ? 'password' : 'text'}
+            name="password"
+            onChange={onChangePassword}
+            value={password}
+            useValidation
+            isValid={!!password}
+            errorMessage="Password is required"
+          />
+        </div>
+        <Button type="submit" title="Login" bgColor="bittersweet" />
+      </form>
       <div className="login-footer">
         Don&apos;t have an account?
         <span role="presentation" onClick={() => dispatch(authActions.setAuthModalMode('signup'))}>

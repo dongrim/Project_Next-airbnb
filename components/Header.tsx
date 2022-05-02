@@ -26,15 +26,10 @@ const Container = styled.div`
       margin-right: 6px;
     }
   }
-  /** react-ouside-click-handler div */
-  .header-logo-wrapper + div {
-    position: relative;
-  }
 `;
 
 const Header = () => {
-  const user = useSelector((state) => state.user);
-  // const authMode = useSelector((state) => state.auth.authMode);
+  const { isLogged } = useSelector((state) => state.user);
 
   return (
     <Container>
@@ -44,7 +39,7 @@ const Header = () => {
           <AirbnbLogoText />
         </a>
       </Link>
-      {!user.isLogged ? <HeaderAuths /> : <HeaderUserProfile />}
+      {!isLogged ? <HeaderAuths /> : <HeaderUserProfile />}
     </Container>
   );
 };

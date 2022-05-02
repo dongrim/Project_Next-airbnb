@@ -35,5 +35,5 @@ const Button: React.FC<IProps> = ({ title, bgColor, ...props }) => {
   );
 };
 
-// shouldComponentUpdate(nextProps, nextState)
+// export default Button;
 export default React.memo(Button);
