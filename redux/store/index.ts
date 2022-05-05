@@ -2,15 +2,17 @@ import { AnyAction, Store } from 'redux';
 import { HYDRATE, createWrapper } from 'next-redux-wrapper';
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useSelector as useReduxSelector } from 'react-redux';
+import { UserState } from '../../types/reduxState';
 import userReducer from '../store/userSlice';
 import commonReducer from '../store/commonSlice';
-import { UserState } from '../../types/reduxState';
 import authReducer from '../store/authSlice';
+import registerRoomReducer from '../store/registerRoomSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
   common: commonReducer,
   auth: authReducer,
+  registerRoom: registerRoomReducer,
 });
 
 const reducer = (state, action: AnyAction) => {
