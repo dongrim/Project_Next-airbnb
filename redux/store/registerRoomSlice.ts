@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 type RegisterRoomState = {
   largeBuildingType: string | null;
@@ -12,19 +12,23 @@ const initialState: RegisterRoomState = {
   buildingType: null,
   roomType: null,
   isSetUpForGuest: null,
-  // typeOfBuilding: {
-  //   apart: 0,
-  // },
-  // type: {
-  //   commonPlace: 0,
-  // },
 };
 
 const registerRoomSlice = createSlice({
   name: 'registerRoom',
   initialState,
   reducers: {
-    //
+    setLargeBuildingType(state, action: PayloadAction<string>) {
+      state.largeBuildingType = action.payload;
+      return state;
+    },
+    setBuildingType(state, action: PayloadAction<string>) {
+      /* if (action.payload === "") {
+        state.buildingType = null;
+      } */
+      state.buildingType = action.payload;
+      return state;
+    },
   },
 });
 

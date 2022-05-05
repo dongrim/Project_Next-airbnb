@@ -30,10 +30,16 @@ const RegisterSelectStyle = css`
 
   label {
     /* position: relative; */
-    margin-bottom: 80px !important;
+    display: inline-block;
+    margin-bottom: 10px;
   }
+  /* label */
   span {
-    //
+    display: block;
+    font-size: 16px;
+    color: ${palette.gray_76};
+    font-weight: 600;
+    margin-bottom: 8px;
   }
 
   select {
@@ -64,7 +70,6 @@ const Container = styled.div<SelectorContainerProps>`
     // border: ${({ isValid }) => (isValid ? `` : `2px solid ${palette.orange}`)};
     ${({ validateMode, isValid }) => {
       if (validateMode) {
-        // @check
         if (!isValid) {
           return css`
             border-color: ${palette.tawny};
@@ -126,19 +131,20 @@ const Select: React.FC<IProps> = ({
   ...props
 }) => {
   const { validateMode } = useValidateMode();
+
   return (
-    // <Container type={type} isValid={isValid || !validateMode}>
     <Container
       isValid={!!isValid}
-      // @check !validateMode => validateMode
+      // @do: !validateMode => validateMode
       validateMode={(useValidation as boolean) && !validateMode}
       type={type}>
       {label && <label htmlFor="mySelect">{label}</label>}
       <select name="mySelect" {...props}>
-        {/*   */}
-        <option value={props.defaultValue} disabled>
-          {props.defaultValue}
-        </option>
+        {disabledOptions.map((option, index) => (
+          <option key={index} value={option} disabled>
+            {option}
+          </option>
+        ))}
         {options.map((option, idx) => (
           <option key={idx} value={option}>
             {option}
